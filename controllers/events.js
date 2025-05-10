@@ -2,11 +2,11 @@ const { response } = require('express');
 const Evento = require('../models/Evento');
 
 const getEventos = async (req, res = response) => {
-  console.log('✅ Ruta /api/events alcanzada');
+  // console.log('✅ Ruta /api/events alcanzada');
 
   const eventos = await Evento.find().populate('user', 'name');
 
-  res.json({ ok: true, msg: eventos });
+  res.json({ ok: true, eventos });
 };
 
 const crearEventos = async (req, res) => {
@@ -79,12 +79,10 @@ const eliminarEvento = async (req, res) => {
         .json({ ok: false, msg: 'Evento no existe con ese id' });
 
     if (evento.user.toString() !== uid) {
-      return res
-        .status(401)
-        .json({
-          ok: false,
-          msg: 'No tiene privilegio de eliminar este evento',
-        });
+      return res.status(401).json({
+        ok: false,
+        msg: 'No tiene privilegio de eliminar este evento',
+      });
     }
 
     const nuevoEvento = { ...req.body, user: uid };
